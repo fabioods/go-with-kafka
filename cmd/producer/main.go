@@ -11,7 +11,7 @@ func main() {
 	deliveryChan := make(chan kafka.Event)
 	producer := NewKafkaProducer()
 	Publish("transferiu", "teste", producer, []byte("transferecia2"), deliveryChan)
-	DeliveryReport(deliveryChan) // async
+	go DeliveryReport(deliveryChan) // async
 
 	//e := <-deliveryChan
 	//msg := e.(*kafka.Message)
@@ -21,13 +21,13 @@ func main() {
 	//	fmt.Println("Mensagem enviada:", msg.TopicPartition)
 	//}
 	//
-
+	producer.Flush(1000)
 }
 
 func NewKafkaProducer() *kafka.Producer {
 	configMap := &kafka.ConfigMap{
-		"bootstrap.servers":   "gokafka_kafka_1:9092",
-		"delivery.timeout.ms": "0",
+		"bootstrap.servers":   "go-with-kafka-kafka-1:9092",
+		"delivery.timeout.ms": "1000",
 		"acks":                "all",
 		"enable.idempotence":  "true",
 	}
